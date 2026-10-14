@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Job | Job Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-content">
+        <a href="index.html" class="logo">JOB <span>PORTAL</span></a>
+        <nav class="navbar">
+            <a href="index.html">Home</a>
+            <a href="insert.html">Add Job</a>
+            <a href="list.html">List Jobs</a>
+            <a href="listOne.html">Find Job</a>
+            <a href="update.html">Update Job</a>
+            <a href="delete.html" class="active">Delete Job</a>
+        </nav>
+    </div>
+</header>
+
+<main class="page-section">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">MANAGE YOUR RECORDS</p>
+            <h1>Delete a Job</h1>
+            <p>Select the job you want to remove from your Job Portal.</p>
+        </div>
+
+        <section class="list-banner">
+            <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=1200&q=85" alt="Notebook">
+            <div class="list-banner-text">
+                <h2>Keep Your Job Records Organized</h2>
+                <p>Review the selected job carefully before confirming deletion.</p>
+            </div>
+        </section>
+
+        <section class="form-card">
+            <h2>Select Job to Delete</h2>
+            <div class="form-group">
+                <label for="jobSelect">Job Title and Company *</label>
+                <select id="jobSelect" required>
+                    <option value="">-- Select a job --</option>
+                </select>
+            </div>
+
+            <div id="selectedJob" class="selected-job" hidden>
+                <h3>Selected Job Details</h3>
+                <p><strong>Job ID:</strong> <span id="detailId"></span></p>
+                <p><strong>Job Title:</strong> <span id="detailTitle"></span></p>
+                <p><strong>Company:</strong> <span id="detailCompany"></span></p>
+                <p><strong>Location:</strong> <span id="detailLocation"></span></p>
+            </div>
+
+            <div id="statusMessage" class="message"></div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="deleteButton" disabled>Delete Job</button>
+                <button type="button" class="btn btn-secondary" id="refreshButton">Refresh</button>
+                <a href="index.html" class="btn btn-secondary">Home Page</a>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script>
+    const jobSelect = document.getElementById("jobSelect");
+    const deleteButton = document.getElementById("deleteButton");
+    const refreshButton = document.getElementById("refreshButton");
+    const statusMessage = document.getElementById("statusMessage");
+    const selectedJob = document.getElementById("selectedJob");
+    const detailId = document.getElementById("detailId");
+    const detailTitle = document.getElementById("detailTitle");
+    const detailCompany = document.getElementById("detailCompany");
+    const detailLocation = document.getElementById("detailLocation");
+    let jobs = [];
+
+    function showMessage(text, type = "") {
+        statusMessage.textContent = text;
+        statusMessage.className = type ? "message " + type : "message";
+    }
+
+    function displaySelectedJob() {
+        // FIXED: id not job_id, company not company_name
+        const job = jobs.find(item => String(item.id) === jobSelect.value);
+        if (!job) {
+            selectedJob.hidden = true;
+            deleteButton.disabled = true;
+            return;
+        }
+        detailId.textContent = job.id;
+        detailTitle.textContent = job.title || "";
+        detailCompany.textContent = job.company || "";
+        detailLocation.textContent = job.location || "";
+        selectedJob.hidden = false;
+        deleteButton.disabled = false;
+        showMessage("");
+    }
+
+    async function loadJobs() {
+        refreshButton.disabled = true;
+        refreshButton.textContent = "Loading...";
+        jobSelect.innerHTML = '<option value="">-- Select a job --</option>';
+        try {
+            const response = await fetch("/api/jobs");
+            const result = await response.json();
+            if (!Array.isArray(result)) throw new Error("Server error");
+            jobs = result;
+            jobs.forEach(function (job) {
+                const option = document.createElement("option");
+                option.value = String(job.id); // FIXED
+                option.textContent = job.title + " — " + job.company + " (ID: " + job.id + ")"; // FIXED
+                jobSelect.appendChild(option);
+            });
+            showMessage(jobs.length ? "Select a job from dropdown." : "No jobs available.", jobs.length ? "" : "error");
+        } catch (error) {
+            showMessage("Cannot connect. Start node app.js first.", "error");
+        } finally {
+            refreshButton.disabled = false;
+            refreshButton.textContent = "Refresh";
+        }
+    }
+
+    jobSelect.addEventListener("change", displaySelectedJob);
+    deleteButton.addEventListener("click", async function () {
+        const id = jobSelect.value;
+        if (!id) return showMessage("Please select a job first.", "error");
+        const job = jobs.find(item => String(item.id) === id);
+        const confirmed = window.confirm("Delete Job ID " + job.id + " — " + job.title + " at " + job.company + " ?");
+        if (!confirmed) return;
+        deleteButton.disabled = true;
+        deleteButton.textContent = "Deleting...";
+        try {
+            const response = await fetch("/api/jobs/" + encodeURIComponent(id), { method: "DELETE" });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message);
+            showMessage(result.message || "Job deleted successfully!", "success");
+            await loadJobs();
+        } catch (error) {
+            showMessage(error.message, "error");
+        } finally {
+            deleteButton.textContent = "Delete Job";
+            displaySelectedJob();
+        }
+    });
+    refreshButton.addEventListener("click", loadJobs);
+    loadJobs();
+</script>
+</body>
+</html>

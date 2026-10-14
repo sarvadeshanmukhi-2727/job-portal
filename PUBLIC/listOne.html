@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find a Job | Job Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container header-content">
+        <a href="index.html" class="logo">JOB <span>PORTAL</span></a>
+
+        <nav class="navbar">
+            <a href="index.html">Home</a>
+            <a href="insert.html">Add Job</a>
+            <a href="list.html">List Jobs</a>
+            <a href="listOne.html" class="active">Find Job</a>
+            <a href="update.html">Update Job</a>
+            <a href="delete.html">Delete Job</a>
+        </nav>
+    </div>
+</header>
+
+<main class="page-section">
+    <div class="container">
+
+        <div class="section-heading">
+            <p class="eyebrow">SEARCH SMARTER</p>
+            <h1>Find a Specific Job</h1>
+            <p>Select a saved job to view its complete details.</p>
+        </div>
+
+        <section class="list-banner">
+            <img
+                src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=85"
+                alt="Professional preparing for career opportunities">
+            <div class="list-banner-text">
+                <h2>Discover Job Details</h2>
+                <p>Choose a job from your saved records to see its requirements and interview information.</p>
+            </div>
+        </section>
+
+        <section class="form-card search-card">
+            <h2>Select a Job</h2>
+
+            <div class="form-group">
+                <label for="jobSelect">Job Title and Company *</label>
+                <select id="jobSelect" required>
+                    <option value="">-- Select a job --</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="viewButton">
+                    View Job
+                </button>
+
+                <button type="button" class="btn btn-secondary" id="refreshButton">
+                    Refresh
+                </button>
+
+                <a href="index.html" class="btn btn-secondary">Home Page</a>
+            </div>
+
+            <div id="statusMessage" class="message" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="table-card" id="detailsSection" hidden>
+            <div class="table-heading">
+                <h2>Selected Job Details</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <tbody id="jobDetailsBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 Job Portal | Connecting People with Opportunities</p>
+    </div>
+</footer>
+
+<script>
+    const jobSelect = document.getElementById("jobSelect");
+    const viewButton = document.getElementById("viewButton");
+    const refreshButton = document.getElementById("refreshButton");
+    const statusMessage = document.getElementById("statusMessage");
+    const detailsSection = document.getElementById("detailsSection");
+    const jobDetailsBody = document.getElementById("jobDetailsBody");
+
+    let jobs = [];
+
+    function showMessage(message, type = "") {
+        statusMessage.textContent = message;
+        statusMessage.className = type ? "message " + type : "message";
+    }
+
+    function addDetail(label, value) {
+        const row = document.createElement("tr");
+        const heading = document.createElement("th");
+        const cell = document.createElement("td");
+
+        heading.textContent = label;
+        cell.textContent = value ?? "Not provided";
+
+        row.append(heading, cell);
+        jobDetailsBody.appendChild(row);
+    }
+
+    async function loadJobs() {
+        refreshButton.disabled = true;
+        refreshButton.textContent = "Loading...";
+        viewButton.disabled = true;
+
+        detailsSection.hidden = true;
+        jobDetailsBody.replaceChildren();
+        jobSelect.replaceChildren();
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "-- Select a job --";
+        jobSelect.appendChild(placeholder);
+
+        try {
+            const response = await fetch("/api/jobs");
+            const result = await response.json().catch(() => null);
+
+            if (!response.ok) {
+                throw new Error(
+                    result?.message || result?.error || "Unable to load jobs."
+                );
+            }
+
+            if (!Array.isArray(result)) {
+                throw new Error("Unexpected server response. Check GET /api/jobs.");
+            }
+
+            jobs = result;
+
+            jobs.forEach(function (job) {
+                const option = document.createElement("option");
+                option.value = String(job.job_id);
+                option.textContent =
+                    job.title + " — " + job.company_name +
+                    " (ID: " + job.job_id + ")";
+                jobSelect.appendChild(option);
+            });
+
+            showMessage(
+                jobs.length
+                    ? jobs.length + " job(s) available. Select one to view details."
+                    : "No jobs found. Add a job first.",
+                jobs.length ? "" : "error"
+            );
+
+        } catch (error) {
+            jobs = [];
+            showMessage(
+                error.message === "Failed to fetch"
+                    ? "Cannot connect to the server. Start app.js and open this page through localhost:3000."
+                    : error.message,
+                "error"
+            );
+        } finally {
+            refreshButton.disabled = false;
+            refreshButton.textContent = "Refresh";
+            viewButton.disabled = false;
+        }
+    }
+
+    function viewJob() {
+        const selectedId = jobSelect.value;
+
+        if (!selectedId) {
+            showMessage("Please select a job from the dropdown.", "error");
+            detailsSection.hidden = true;
+            return;
+        }
+
+        const job = jobs.find(function (item) {
+            return String(item.job_id) === selectedId;
+        });
+
+        if (!job) {
+            showMessage("Job not found. Click Refresh and try again.", "error");
+            detailsSection.hidden = true;
+            return;
+        }
+
+        jobDetailsBody.replaceChildren();
+
+        addDetail("Job ID", job.job_id);
+        addDetail("Title of the Job", job.title);
+        addDetail("Company Name", job.company_name);
+        addDetail("Location", job.location);
+
+        const salary = Number(job.salary);
+        addDetail(
+            "Annual Salary",
+            Number.isFinite(salary)
+                ? "₹" + salary.toLocaleString("en-IN", {
+                    maximumFractionDigits: 2
+                })
+                : job.salary
+        );
+
+        addDetail("Skills Required", job.skills_required);
+        addDetail(
+            "Date of Interview",
+            job.interview_date
+                ? String(job.interview_date).slice(0, 10)
+                : ""
+        );
+        addDetail("Number of Posts", job.number_of_posts);
+
+        detailsSection.hidden = false;
+        showMessage("Job details loaded successfully.", "success");
+    }
+
+    viewButton.addEventListener("click", viewJob);
+    refreshButton.addEventListener("click", loadJobs);
+
+    loadJobs();
+</script>
+
+</body>
+</html>

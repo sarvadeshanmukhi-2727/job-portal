@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Job | Job Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container header-content">
+        <a href="index.html" class="logo">JOB <span>PORTAL</span></a>
+        <nav class="navbar">
+            <a href="index.html">Home</a>
+            <a href="insert.html">Add Job</a>
+            <a href="list.html">List Jobs</a>
+            <a href="listOne.html">Find Job</a>
+            <a href="update.html" class="active">Update Job</a>
+            <a href="delete.html">Delete Job</a>
+        </nav>
+    </div>
+</header>
+
+<main class="page-section">
+    <div class="container">
+
+        <div class="section-heading">
+            <p class="eyebrow">KEEP INFORMATION ACCURATE</p>
+            <h1>Update Job Details</h1>
+            <p>Select an existing job and update its information.</p>
+        </div>
+
+        <section class="list-banner">
+            <img
+                src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=85"
+                alt="Professional reviewing and updating written documents">
+            <div class="list-banner-text">
+                <h2>Keep Your Opportunities Up to Date</h2>
+                <p>Make changes to job details and save the updated record.</p>
+            </div>
+        </section>
+
+        <section class="form-card">
+            <h2>Choose a Job to Update</h2>
+
+            <div class="form-group">
+                <label for="jobSelect">Select Existing Job *</label>
+                <select id="jobSelect" required>
+                    <option value="">-- Select a job --</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="refreshButton">
+                    Refresh Jobs
+                </button>
+                <a href="index.html" class="btn btn-secondary">Home Page</a>
+            </div>
+
+            <div id="statusMessage" class="message" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="form-card" id="updateSection" hidden>
+            <h2>Edit Job Information</h2>
+
+            <form id="updateForm">
+                <div class="form-group">
+                    <label for="job_id">Job ID</label>
+                    <input type="number" id="job_id" readonly>
+                    <small>The Job ID cannot be changed.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Title of the Job *</label>
+                    <select id="title" required>
+                        <option value="">-- Select job title --</option>
+                        <option value="Software Developer">Software Developer</option>
+                        <option value="Web Developer">Web Developer</option>
+                        <option value="Data Analyst">Data Analyst</option>
+                        <option value="Java Developer">Java Developer</option>
+                        <option value="Python Developer">Python Developer</option>
+                        <option value="UI/UX Designer">UI/UX Designer</option>
+                        <option value="Network Engineer">Network Engineer</option>
+                        <option value="Technical Support Engineer">Technical Support Engineer</option>
+                        <option value="Intern">Intern</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="company_name">Company Name *</label>
+                    <input type="text" id="company_name" maxlength="150" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location *</label>
+                    <select id="location" required>
+                        <option value="">-- Select location --</option>
+                        <option value="Kurnool">Kurnool</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Bengaluru">Bengaluru</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Vijayawada">Vijayawada</option>
+                        <option value="Visakhapatnam">Visakhapatnam</option>
+                        <option value="Pune">Pune</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Remote">Remote</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="salary">Annual Salary (₹) *</label>
+                    <input type="number" id="salary" min="1" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="skills_required">Skills Required *</label>
+                    <select id="skills_required" required>
+                        <option value="">-- Select required skills --</option>
+                        <option value="HTML, CSS, JavaScript">HTML, CSS, JavaScript</option>
+                        <option value="Java, SQL">Java, SQL</option>
+                        <option value="Python, SQL">Python, SQL</option>
+                        <option value="Node.js, Express, MySQL">Node.js, Express, MySQL</option>
+                        <option value="React, JavaScript">React, JavaScript</option>
+                        <option value="C, C++">C, C++</option>
+                        <option value="Communication, Problem Solving">Communication, Problem Solving</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="interview_date">Date of Interview *</label>
+                    <input type="date" id="interview_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="number_of_posts">Number of Posts *</label>
+                    <input type="number" id="number_of_posts" min="1" step="1" required>
+                </div>
+
+                <div id="updateMessage" class="message" role="status" aria-live="polite"></div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="updateButton">
+                        Save Changes
+                    </button>
+
+                    <button type="reset" class="btn btn-secondary" id="clearButton">
+                        Reset Form
+                    </button>
+
+                    <button type="button" class="btn btn-secondary"
+                        onclick="window.location.reload()">
+                        Refresh Page
+                    </button>
+
+                    <a href="index.html" class="btn btn-secondary">Home Page</a>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 Job Portal | Connecting People with Opportunities</p>
+    </div>
+</footer>
+
+<script>
+    const jobSelect = document.getElementById("jobSelect");
+    const refreshButton = document.getElementById("refreshButton");
+    const statusMessage = document.getElementById("statusMessage");
+    const updateMessage = document.getElementById("updateMessage");
+    const updateSection = document.getElementById("updateSection");
+    const updateForm = document.getElementById("updateForm");
+    const updateButton = document.getElementById("updateButton");
+    const clearButton = document.getElementById("clearButton");
+
+    const fields = [
+        "job_id",
+        "title",
+        "company_name",
+        "location",
+        "salary",
+        "skills_required",
+        "interview_date",
+        "number_of_posts"
+    ];
+
+    let jobs = [];
+
+    function message(element, text, type = "") {
+        element.textContent = text;
+        element.className = type ? "message " + type : "message";
+    }
+
+    function getDate(value) {
+        if (!value) return "";
+        return String(value).slice(0, 10);
+    }
+
+    async function loadJobs() {
+        refreshButton.disabled = true;
+        refreshButton.textContent = "Loading...";
+        updateSection.hidden = true;
+        jobs = [];
+
+        jobSelect.replaceChildren();
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "-- Select a job --";
+        jobSelect.appendChild(placeholder);
+
+        try {
+            const response = await fetch("/api/jobs");
+            const result = await response.json().catch(() => null);
+
+            if (!response.ok) {
+                throw new Error(
+                    result?.message || result?.error || "Unable to load jobs."
+                );
+            }
+
+            if (!Array.isArray(result)) {
+                throw new Error("Unexpected response from /api/jobs.");
+            }
+
+            jobs = result;
+
+            jobs.forEach(function (job) {
+                const option = document.createElement("option");
+                option.value = String(job.job_id);
+                option.textContent =
+                    job.title + " — " + job.company_name +
+                    " (ID: " + job.job_id + ")";
+                jobSelect.appendChild(option);
+            });
+
+            message(
+                statusMessage,
+                jobs.length
+                    ? "Select a job to edit its details."
+                    : "No jobs available. Add a job first.",
+                jobs.length ? "" : "error"
+            );
+
+        } catch (error) {
+            message(
+                statusMessage,
+                error.message === "Failed to fetch"
+                    ? "Cannot connect to the server. Start app.js first."
+                    : error.message,
+                "error"
+            );
+        } finally {
+            refreshButton.disabled = false;
+            refreshButton.textContent = "Refresh Jobs";
+        }
+    }
+
+    function fillForm(job) {
+        fields.forEach(function (field) {
+            const input = document.getElementById(field);
+            let value = job[field] ?? "";
+
+            if (field === "interview_date") {
+                value = getDate(value);
+            }
+
+            if (field === "salary" || field === "number_of_posts" ||
+                field === "job_id") {
+                value = value === null ? "" : value;
+            }
+
+            input.value = value;
+        });
+
+        // If an existing value is not in a dropdown, preserve it.
+        ["title", "location", "skills_required"].forEach(function (field) {
+            const select = document.getElementById(field);
+            const currentValue = job[field] ?? "";
+
+            if (currentValue && !Array.from(select.options).some(
+                option => option.value === String(currentValue)
+            )) {
+                const option = document.createElement("option");
+                option.value = String(currentValue);
+                option.textContent = String(currentValue);
+                select.appendChild(option);
+            }
+
+            select.value = currentValue;
+        });
+
+        updateSection.hidden = false;
+        message(updateMessage, "");
+    }
+
+    jobSelect.addEventListener("change", function () {
+        const job = jobs.find(
+            item => String(item.job_id) === jobSelect.value
+        );
+
+        if (job) {
+            fillForm(job);
+        } else {
+            updateSection.hidden = true;
+        }
+    });
+
+    clearButton.addEventListener("click", function () {
+        setTimeout(function () {
+            const job = jobs.find(
+                item => String(item.job_id) === jobSelect.value
+            );
+
+            if (job) fillForm(job);
+        }, 0);
+    });
+
+    updateForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!updateForm.reportValidity()) return;
+
+        const id = document.getElementById("job_id").value;
+
+        const job = {
+            title: document.getElementById("title").value,
+            company_name: document.getElementById("company_name").value.trim(),
+            location: document.getElementById("location").value,
+            salary: Number(document.getElementById("salary").value),
+            skills_required: document.getElementById("skills_required").value,
+            interview_date: document.getElementById("interview_date").value,
+            number_of_posts: Number(
+                document.getElementById("number_of_posts").value
+            )
+        };
+
+        if (job.salary <= 0 || job.number_of_posts < 1) {
+            message(
+                updateMessage,
+                "Salary and number of posts must be positive values.",
+                "error"
+            );
+            return;
+        }
+
+        updateButton.disabled = true;
+        updateButton.textContent = "Updating...";
+        message(updateMessage, "Saving changes...");
+
+        try {
+            const response = await fetch(
+                "/api/jobs/" + encodeURIComponent(id),
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(job)
+                }
+            );
+
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(
+                    result.message || result.error || "Unable to update job."
+                );
+            }
+
+            message(
+                updateMessage,
+                result.message || "Job updated successfully!",
+                "success"
+            );
+
+            await loadJobs();
+            jobSelect.value = id;
+
+            // Reload the updated record into the form.
+            const updatedJob = jobs.find(
+                item => String(item.job_id) === String(id)
+            );
+
+            if (updatedJob) fillForm(updatedJob);
+
+            message(
+                updateMessage,
+                result.message || "Job updated successfully!",
+                "success"
+            );
+
+        } catch (error) {
+            message(
+                updateMessage,
+                error.message === "Failed to fetch"
+                    ? "Cannot connect to the server. Check app.js."
+                    : error.message,
+                "error"
+            );
+        } finally {
+            updateButton.disabled = false;
+            updateButton.textContent = "Save Changes";
+        }
+    });
+
+    refreshButton.addEventListener("click", loadJobs);
+
+    loadJobs();
+</script>
+
+</body>
+</html>

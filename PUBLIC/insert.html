@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Job | Job Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container header-content">
+        <a href="index.html" class="logo">JOB <span>PORTAL</span></a>
+
+        <nav class="navbar">
+            <a href="index.html">Home</a>
+            <a href="insert.html" class="active">Add Job</a>
+            <a href="list.html">List Jobs</a>
+            <a href="listOne.html">Find Job</a>
+            <a href="update.html">Update Job</a>
+            <a href="delete.html">Delete Job</a>
+        </nav>
+    </div>
+</header>
+
+<main class="page-section">
+    <div class="container">
+
+        <div class="section-heading">
+            <p class="eyebrow">EXPAND YOUR OPPORTUNITIES</p>
+            <h1>Add a New Job</h1>
+            <p>Enter the job information below. Every field is compulsory.</p>
+        </div>
+
+        <div class="form-layout">
+
+            <div class="form-image">
+                <img
+                    src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=85"
+                    alt="Professional reviewing documents and job information">
+
+                <div class="image-caption">
+                    <h2>Share an Opportunity</h2>
+                    <p>Add complete and accurate details to your Job Portal.</p>
+                </div>
+            </div>
+
+            <section class="form-card">
+                <h2>Job Details</h2>
+
+                <form id="jobForm">
+
+                    <div class="form-group">
+                        <label for="job_id">Job ID *</label>
+                        <input
+                            type="number"
+                            id="job_id"
+                            name="job_id"
+                            min="1"
+                            step="1"
+                            placeholder="Enter a unique job ID"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Title of the Job *</label>
+                        <select id="title" name="title" required>
+                            <option value="">-- Select job title --</option>
+                            <option value="Software Developer">Software Developer</option>
+                            <option value="Web Developer">Web Developer</option>
+                            <option value="Data Analyst">Data Analyst</option>
+                            <option value="Java Developer">Java Developer</option>
+                            <option value="Python Developer">Python Developer</option>
+                            <option value="UI/UX Designer">UI/UX Designer</option>
+                            <option value="Network Engineer">Network Engineer</option>
+                            <option value="Technical Support Engineer">Technical Support Engineer</option>
+                            <option value="Intern">Intern</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company_name">Company Name *</label>
+                        <input
+                            type="text"
+                            id="company_name"
+                            name="company_name"
+                            placeholder="Enter company name"
+                            maxlength="150"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <select id="location" name="location" required>
+                            <option value="">-- Select location --</option>
+                            <option value="Kurnool">Kurnool</option>
+                            <option value="Hyderabad">Hyderabad</option>
+                            <option value="Bengaluru">Bengaluru</option>
+                            <option value="Chennai">Chennai</option>
+                            <option value="Vijayawada">Vijayawada</option>
+                            <option value="Visakhapatnam">Visakhapatnam</option>
+                            <option value="Pune">Pune</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="salary">Salary (per year, ₹) *</label>
+                        <input
+                            type="number"
+                            id="salary"
+                            name="salary"
+                            min="1"
+                            step="0.01"
+                            placeholder="Example: 450000"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skills_required">Skills Required *</label>
+                        <select id="skills_required" name="skills_required" required>
+                            <option value="">-- Select required skills --</option>
+                            <option value="HTML, CSS, JavaScript">HTML, CSS, JavaScript</option>
+                            <option value="Java, SQL">Java, SQL</option>
+                            <option value="Python, SQL">Python, SQL</option>
+                            <option value="Node.js, Express, MySQL">Node.js, Express, MySQL</option>
+                            <option value="React, JavaScript">React, JavaScript</option>
+                            <option value="C, C++">C, C++</option>
+                            <option value="Communication, Problem Solving">Communication, Problem Solving</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interview_date">Date of Interview *</label>
+                        <input
+                            type="date"
+                            id="interview_date"
+                            name="interview_date"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number_of_posts">Number of Posts *</label>
+                        <input
+                            type="number"
+                            id="number_of_posts"
+                            name="number_of_posts"
+                            min="1"
+                            step="1"
+                            placeholder="Enter number of vacancies"
+                            required>
+                    </div>
+
+                    <div id="formMessage" class="message" role="status" aria-live="polite"></div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="saveButton">
+                            Save Job
+                        </button>
+
+                        <button type="reset" class="btn btn-secondary">
+                            Clear Form
+                        </button>
+
+                        <button type="button" class="btn btn-secondary"
+                            onclick="window.location.reload()">
+                            Refresh
+                        </button>
+
+                        <a href="index.html" class="btn btn-secondary">
+                            Home Page
+                        </a>
+                    </div>
+
+                </form>
+            </section>
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 Job Portal | Connecting People with Opportunities</p>
+    </div>
+</footer>
+
+<script>
+    const jobForm = document.getElementById("jobForm");
+    const formMessage = document.getElementById("formMessage");
+    const saveButton = document.getElementById("saveButton");
+
+    jobForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!jobForm.reportValidity()) {
+            return;
+        }
+
+        const job = {
+            job_id: Number(document.getElementById("job_id").value),
+            title: document.getElementById("title").value,
+            company_name: document.getElementById("company_name").value.trim(),
+            location: document.getElementById("location").value,
+            salary: Number(document.getElementById("salary").value),
+            skills_required: document.getElementById("skills_required").value,
+            interview_date: document.getElementById("interview_date").value,
+            number_of_posts: Number(document.getElementById("number_of_posts").value)
+        };
+
+        if (
+            job.job_id < 1 ||
+            job.salary <= 0 ||
+            job.number_of_posts < 1
+        ) {
+            formMessage.textContent =
+                "Job ID, salary and number of posts must be positive values.";
+            formMessage.className = "message error";
+            return;
+        }
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+        formMessage.textContent = "";
+
+        try {
+            const response = await fetch("/api/jobs", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(job)
+            });
+
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(
+                    result.message ||
+                    result.error ||
+                    "Unable to save the job. Please check the server."
+                );
+            }
+
+            formMessage.textContent =
+                result.message || "Job saved successfully!";
+            formMessage.className = "message success";
+
+            jobForm.reset();
+
+            setTimeout(function () {
+                window.location.href = "list.html";
+            }, 1200);
+
+        } catch (error) {
+            formMessage.textContent =
+                error.message === "Failed to fetch"
+                    ? "Cannot connect to the server. Make sure app.js is running."
+                    : error.message;
+
+            formMessage.className = "message error";
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = "Save Job";
+        }
+    });
+</script>
+
+</body>
+</html>

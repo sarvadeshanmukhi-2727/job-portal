@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Jobs | Job Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container header-content">
+        <a href="index.html" class="logo">JOB <span>PORTAL</span></a>
+
+        <nav class="navbar">
+            <a href="index.html">Home</a>
+            <a href="insert.html">Add Job</a>
+            <a href="list.html" class="active">List Jobs</a>
+            <a href="listOne.html">Find Job</a>
+            <a href="update.html">Update Job</a>
+            <a href="delete.html">Delete Job</a>
+        </nav>
+    </div>
+</header>
+
+<main class="page-section">
+    <div class="container">
+
+        <div class="section-heading">
+            <p class="eyebrow">EXPLORE OPPORTUNITIES</p>
+            <h1>Available Job Listings</h1>
+            <p>View all job records saved in your Job Portal database.</p>
+        </div>
+
+        <section class="list-banner">
+            <img
+                src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85"
+                alt="Professionals discussing job opportunities">
+            <div class="list-banner-text">
+                <h2>Your Opportunities, All in One Place</h2>
+                <p>Review job titles, companies, salaries, interview dates and vacancies.</p>
+            </div>
+        </section>
+
+        <section class="table-card">
+            <div class="table-heading">
+                <div>
+                    <h2>Job Records</h2>
+                    <p id="jobCount">Loading job records...</p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" id="refreshButton">
+                        Refresh
+                    </button>
+                    <a href="index.html" class="btn btn-secondary">Home Page</a>
+                </div>
+            </div>
+
+            <div id="statusMessage" class="message" role="status" aria-live="polite"></div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Annual Salary (₹)</th>
+                            <th>Skills Required</th>
+                            <th>Interview Date</th>
+                            <th>Number of Posts</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="jobsTableBody">
+                        <tr>
+                            <td colspan="8">Loading jobs...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 Job Portal | Connecting People with Opportunities</p>
+    </div>
+</footer>
+
+<script>
+    const jobsTableBody = document.getElementById("jobsTableBody");
+    const jobCount = document.getElementById("jobCount");
+    const statusMessage = document.getElementById("statusMessage");
+    const refreshButton = document.getElementById("refreshButton");
+
+    function addCell(row, value) {
+        const cell = document.createElement("td");
+        cell.textContent = value ?? "";
+        row.appendChild(cell);
+    }
+
+    async function loadJobs() {
+        refreshButton.disabled = true;
+        refreshButton.textContent = "Loading...";
+        statusMessage.textContent = "";
+        statusMessage.className = "message";
+        jobsTableBody.replaceChildren();
+
+        try {
+            const response = await fetch("/api/jobs", {
+                headers: { "Accept": "application/json" }
+            });
+
+            const result = await response.json().catch(() => null);
+
+            if (!response.ok) {
+                throw new Error(
+                    result?.message || result?.error ||
+                    "Unable to load job records."
+                );
+            }
+
+            if (!Array.isArray(result)) {
+                throw new Error("Unexpected server response. Check GET /api/jobs in app.js.");
+            }
+
+            jobCount.textContent = result.length + " job record(s) found";
+
+            if (result.length === 0) {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 8;
+                cell.textContent = "No jobs found. Select Add Job to insert a record.";
+                row.appendChild(cell);
+                jobsTableBody.appendChild(row);
+                return;
+            }
+
+            result.forEach(function (job) {
+                const row = document.createElement("tr");
+
+                addCell(row, job.job_id);
+                addCell(row, job.title);
+                addCell(row, job.company_name);
+                addCell(row, job.location);
+
+                const salary = Number(job.salary);
+                addCell(
+                    row,
+                    Number.isFinite(salary)
+                        ? salary.toLocaleString("en-IN", {
+                            maximumFractionDigits: 2
+                        })
+                        : job.salary
+                );
+
+                addCell(row, job.skills_required);
+
+                const interviewDate = job.interview_date
+                    ? String(job.interview_date).slice(0, 10)
+                    : "";
+                addCell(row, interviewDate);
+
+                addCell(row, job.number_of_posts);
+
+                jobsTableBody.appendChild(row);
+            });
+
+        } catch (error) {
+            jobCount.textContent = "Could not load job records";
+
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 8;
+            cell.textContent = error.message;
+            row.appendChild(cell);
+            jobsTableBody.appendChild(row);
+
+            statusMessage.textContent =
+                error.message === "Failed to fetch"
+                    ? "Cannot connect to the server. Start app.js and open this page through http://localhost:3000/list.html."
+                    : error.message;
+
+            statusMessage.className = "message error";
+        } finally {
+            refreshButton.disabled = false;
+            refreshButton.textContent = "Refresh";
+        }
+    }
+
+    refreshButton.addEventListener("click", loadJobs);
+    loadJobs();
+</script>
+
+</body>
+</html>
